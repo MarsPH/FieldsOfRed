@@ -572,6 +572,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 562588040}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &590326862 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3455494106815383668, guid: 18021d23b15e48046b7b8cfdfd40eee0, type: 3}
+  m_PrefabInstance: {fileID: 3385915296830977400}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13be2ecc36e22f64c80f3ee61ab43001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LanternToggle
 --- !u!1 &593153363
 GameObject:
   m_ObjectHideFlags: 0
@@ -3011,6 +3022,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 76161819}
+    - target: {fileID: 2176327485798618759, guid: dd21f043399dd5f45b066cde5930505b, type: 3}
+      propertyPath: playerLantern
+      value: 
+      objectReference: {fileID: 590326862}
     - target: {fileID: 4811709080353561765, guid: dd21f043399dd5f45b066cde5930505b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 23.31
