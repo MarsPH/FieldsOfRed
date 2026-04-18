@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 33269012990689728}
   - component: {fileID: 23315500312916418}
   m_Layer: 0
-  m_Name: Latern2
+  m_Name: Latern2Mahan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
