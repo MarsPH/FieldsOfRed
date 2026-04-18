@@ -3426,11 +3426,84 @@ PrefabInstance:
       propertyPath: m_Name
       value: ScaleBody
       objectReference: {fileID: 0}
+    - target: {fileID: 971063048711079015, guid: b0f4750417d297941a1d319dc0302f05, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0f4750417d297941a1d319dc0302f05, type: 3}
+--- !u!1001 &8438194684385378503
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3384569914070851672, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 76161819}
+    - target: {fileID: 3384569914070851672, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: playerHiding
+      value: 
+      objectReference: {fileID: 297247186}
+    - target: {fileID: 3384569914070851672, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: playerLantern
+      value: 
+      objectReference: {fileID: 590326862}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 22.024153
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.6171994
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 11.765916
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4350952610965525943, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_Name
+      value: MonsterMan
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
 --- !u!1001 &8509875676427670006
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3445,7 +3518,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1421710694077051161, guid: dd21f043399dd5f45b066cde5930505b, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2176327485798618759, guid: dd21f043399dd5f45b066cde5930505b, type: 3}
       propertyPath: player
@@ -3512,3 +3585,4 @@ SceneRoots:
   - {fileID: 3915293429284896791}
   - {fileID: 1629008403}
   - {fileID: 340710105}
+  - {fileID: 8438194684385378503}
