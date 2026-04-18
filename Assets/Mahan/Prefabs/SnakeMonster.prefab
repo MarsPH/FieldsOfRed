@@ -171,30 +171,17 @@ MonoBehaviour:
   bodyPrefab: {fileID: 971063048711079015, guid: b0f4750417d297941a1d319dc0302f05, type: 3}
   headVisual: {fileID: 577368516349673522}
   audioSource: {fileID: 4480821030088276584}
+  playerLantern: {fileID: 0}
   startBodyCount: 10
-  gap: 80
   bodyFollowSpeed: 10
-  patrolRadius: 10
+  segmentSpacing: 0.9
+  patrolRadius: 50
   patrolPointReachDistance: 1
-  patrolWaitTime: 1.5
-  detectionRange: 10
-  viewAngle: 90
-  eyeHeight: 1.2
-  visionBlockLayers:
-    serializedVersion: 2
-    m_Bits: 256
-  playerLayers:
-    serializedVersion: 2
-    m_Bits: 192
-  loseSightDelay: 2
-  searchTime: 4
+  patrolWaitTime: 0.5
   patrolLoop: {fileID: 0}
-  detectClip: {fileID: 0}
   chaseLoop: {fileID: 0}
-  lostClip: {fileID: 0}
-  patrolSpeed: 2.5
+  patrolSpeed: 5
   chaseSpeed: 5
-  searchSpeed: 3.2
   rotationSpeed: 8
 --- !u!1 &1660797708866338692
 GameObject:
