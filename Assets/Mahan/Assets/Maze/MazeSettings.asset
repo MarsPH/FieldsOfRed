@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a05bb17c1404f3b4d82d28f2ea534980, type: 3}
+  m_Name: MazeSettings
+  m_EditorClassIdentifier: Assembly-CSharp::MazeSettingsSO
+  width: 12
+  height: 12
+  cellSize: 4
+  wallHeight: 4
+  wallThickness: 0.35
+  textureRepeatPerWorldUnit: 0.4
+  wallMaterial: {fileID: 2100000, guid: 84bed3743a4716045849edfbc9969bdc, type: 2}
+  floorMaterial: {fileID: 2100000, guid: 8bcad361392ad334a82fdcdd988727b2, type: 2}
+  generateOnStart: 0
+  randomSeed: 1
+  seed: 12345
+  createFloor: 1
+  floorY: 0
