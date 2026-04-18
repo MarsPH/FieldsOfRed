@@ -30,7 +30,7 @@ public class PlayerHiding : MonoBehaviour
     [SerializeField] private Animator leavesAnimator;
     [SerializeField] private bool useAnimatorBool = false;
     [SerializeField] private string animatorHiddenBool = "IsHidden";
-    [SerializeField] private bool useAnimatorTriggers = false;
+    [SerializeField] private bool useAnimatorTriggers = true;
     [SerializeField] private string animatorEnterTrigger = "EnterHide";
     [SerializeField] private string animatorExitTrigger = "ExitHide";
 
@@ -131,6 +131,10 @@ public class PlayerHiding : MonoBehaviour
     private IEnumerator EnterHideRoutine()
     {
         currentState = HideState.Entering;
+
+        // 🔥 PLAY ENTER ANIMATION IMMEDIATELY
+        SetHiddenVisuals(true);
+
         ApplyEnteringMovementState();
 
         if (enterHideDuration > 0f)
@@ -150,7 +154,6 @@ public class PlayerHiding : MonoBehaviour
         currentState = HideState.Hidden;
 
         ApplyHiddenMovementState();
-        SetHiddenVisuals(true);
     }
 
     private void ForceStopHidingImmediate()
@@ -160,7 +163,9 @@ public class PlayerHiding : MonoBehaviour
         isHidden = false;
         currentState = HideState.None;
 
+        // 🔥 PLAY EXIT ANIMATION
         SetHiddenVisuals(false);
+
         ApplyNormalMovementState();
     }
 
@@ -213,31 +218,29 @@ public class PlayerHiding : MonoBehaviour
 
     private void PlayLeaves(bool hidden)
     {
+        Debug.Log("PlayLeaves: hidden = " + hidden);
+
         if (leavesAnimator != null)
         {
-            if (useAnimatorBool && !string.IsNullOrEmpty(animatorHiddenBool))
-            {
-                leavesAnimator.SetBool(animatorHiddenBool, hidden);
-            }
-
             if (useAnimatorTriggers)
             {
                 if (hidden)
                 {
-                    if (!string.IsNullOrEmpty(animatorExitTrigger))
-                        leavesAnimator.ResetTrigger(animatorExitTrigger);
-
-                    if (!string.IsNullOrEmpty(animatorEnterTrigger))
-                        leavesAnimator.SetTrigger(animatorEnterTrigger);
+                    Debug.Log("TRIGGER ENTER HIDE");
+                    leavesAnimator.ResetTrigger(animatorExitTrigger);
+                    leavesAnimator.SetTrigger(animatorEnterTrigger);
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(animatorEnterTrigger))
-                        leavesAnimator.ResetTrigger(animatorEnterTrigger);
-
-                    if (!string.IsNullOrEmpty(animatorExitTrigger))
-                        leavesAnimator.SetTrigger(animatorExitTrigger);
+                    Debug.Log("TRIGGER EXIT HIDE");
+                    leavesAnimator.ResetTrigger(animatorEnterTrigger);
+                    leavesAnimator.SetTrigger(animatorExitTrigger);
                 }
+            }
+
+            if (useAnimatorBool)
+            {
+                leavesAnimator.SetBool(animatorHiddenBool, hidden);
             }
 
             return;
@@ -258,10 +261,8 @@ public class PlayerHiding : MonoBehaviour
     {
         if (leavesAnimator != null)
         {
-            if (useAnimatorBool && !string.IsNullOrEmpty(animatorHiddenBool))
-            {
+            if (useAnimatorBool)
                 leavesAnimator.SetBool(animatorHiddenBool, false);
-            }
 
             return;
         }
