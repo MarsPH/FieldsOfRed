@@ -198,7 +198,15 @@ public class SnakeMonsterAI : MonoBehaviour
         if (distanceToPlayer > detectionRange)
             return false;
 
-        float angle = Vector3.Angle(transform.forward, directionToPlayer.normalized);
+        Vector3 visionForward = headVisual != null ? headVisual.forward : transform.forward;
+        visionForward.y = 0f;
+        visionForward.Normalize();
+
+        Vector3 flatDirectionToPlayer = directionToPlayer;
+        flatDirectionToPlayer.y = 0f;
+        flatDirectionToPlayer.Normalize();
+
+        float angle = Vector3.Angle(visionForward, flatDirectionToPlayer);
         if (angle > viewAngle * 0.5f)
             return false;
 
@@ -378,12 +386,21 @@ public class SnakeMonsterAI : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
 
-        Vector3 left = Quaternion.Euler(0f, -viewAngle * 0.5f, 0f) * transform.forward;
-        Vector3 right = Quaternion.Euler(0f, viewAngle * 0.5f, 0f) * transform.forward;
+        Vector3 forward = headVisual != null ? headVisual.forward : transform.forward;
+        forward.y = 0f;
+        if (forward.sqrMagnitude > 0.001f)
+            forward.Normalize();
+        else
+            forward = transform.forward;
+
+        Vector3 left = Quaternion.Euler(0f, -viewAngle * 0.5f, 0f) * forward;
+        Vector3 right = Quaternion.Euler(0f, viewAngle * 0.5f, 0f) * forward;
+
+        Vector3 eyePos = transform.position + Vector3.up * eyeHeight;
 
         Gizmos.color = Color.cyan;
-        Gizmos.DrawRay(transform.position + Vector3.up * eyeHeight, left * detectionRange);
-        Gizmos.DrawRay(transform.position + Vector3.up * eyeHeight, right * detectionRange);
+        Gizmos.DrawRay(eyePos, left * detectionRange);
+        Gizmos.DrawRay(eyePos, right * detectionRange);
 
         Gizmos.color = Color.red;
         Gizmos.DrawSphere(lastSeenPlayerPosition, 0.25f);
