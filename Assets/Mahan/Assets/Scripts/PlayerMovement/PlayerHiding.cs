@@ -26,8 +26,20 @@ public class PlayerHiding : MonoBehaviour
     [SerializeField] private float hiddenCameraYOffset = -0.35f;
     [SerializeField] private float cameraMoveSpeed = 8f;
 
-    [Header("Screen Effects")]
-    [SerializeField] private GameObject hideOverlay;
+    [Header("Animator Option")]
+    [SerializeField] private Animator leavesAnimator;
+    [SerializeField] private bool useAnimatorBool = false;
+    [SerializeField] private string animatorHiddenBool = "IsHidden";
+    [SerializeField] private bool useAnimatorTriggers = false;
+    [SerializeField] private string animatorEnterTrigger = "EnterHide";
+    [SerializeField] private string animatorExitTrigger = "ExitHide";
+
+    [Header("Legacy Animation Option")]
+    [SerializeField] private Animation leavesAnimation;
+    [SerializeField] private string enterAnimationName = "LeavesOn";
+    [SerializeField] private string exitAnimationName = "ReverseLeaves";
+
+    [Header("Vignette")]
     [SerializeField] private CanvasGroup vignetteGroup;
     [SerializeField] [Range(0f, 1f)] private float hiddenVignetteAlpha = 0.45f;
     [SerializeField] private float vignetteFadeSpeed = 6f;
@@ -61,22 +73,18 @@ public class PlayerHiding : MonoBehaviour
     private void Start()
     {
         if (cameraHolder != null)
-        {
             cameraStartLocalPosition = cameraHolder.localPosition;
-        }
-
-        if (hideOverlay != null)
-        {
-            hideOverlay.SetActive(false);
-        }
 
         if (vignetteGroup != null)
-        {
             vignetteGroup.alpha = 0f;
-        }
 
         SetExtraHiddenObjects(false);
         ApplyNormalMovementState();
+
+        currentTargetCameraOffset = 0f;
+        currentTargetVignetteAlpha = 0f;
+
+        SetInitialLeavesState();
     }
 
     private void Update()
@@ -94,9 +102,7 @@ public class PlayerHiding : MonoBehaviour
         canHide = true;
 
         if (!isHidden && !IsTransitioning)
-        {
             enterRoutine = StartCoroutine(EnterHideRoutine());
-        }
     }
 
     public void ExitHideZone(HideZone zone)
@@ -114,13 +120,12 @@ public class PlayerHiding : MonoBehaviour
         {
             CancelEnterRoutine();
             currentState = HideState.None;
+            SetHiddenVisuals(false);
             ApplyNormalMovementState();
         }
 
         if (isHidden)
-        {
             ForceStopHidingImmediate();
-        }
     }
 
     private IEnumerator EnterHideRoutine()
@@ -129,15 +134,14 @@ public class PlayerHiding : MonoBehaviour
         ApplyEnteringMovementState();
 
         if (enterHideDuration > 0f)
-        {
             yield return new WaitForSeconds(enterHideDuration);
-        }
 
         enterRoutine = null;
 
         if (!canHide || currentZone == null)
         {
             currentState = HideState.None;
+            SetHiddenVisuals(false);
             ApplyNormalMovementState();
             yield break;
         }
@@ -200,15 +204,79 @@ public class PlayerHiding : MonoBehaviour
 
     private void SetHiddenVisuals(bool hidden)
     {
-        if (hideOverlay != null)
-        {
-            hideOverlay.SetActive(hidden);
-        }
-
+        PlayLeaves(hidden);
         SetExtraHiddenObjects(hidden);
 
         currentTargetCameraOffset = hidden ? hiddenCameraYOffset : 0f;
         currentTargetVignetteAlpha = hidden ? hiddenVignetteAlpha : 0f;
+    }
+
+    private void PlayLeaves(bool hidden)
+    {
+        if (leavesAnimator != null)
+        {
+            if (useAnimatorBool && !string.IsNullOrEmpty(animatorHiddenBool))
+            {
+                leavesAnimator.SetBool(animatorHiddenBool, hidden);
+            }
+
+            if (useAnimatorTriggers)
+            {
+                if (hidden)
+                {
+                    if (!string.IsNullOrEmpty(animatorExitTrigger))
+                        leavesAnimator.ResetTrigger(animatorExitTrigger);
+
+                    if (!string.IsNullOrEmpty(animatorEnterTrigger))
+                        leavesAnimator.SetTrigger(animatorEnterTrigger);
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(animatorEnterTrigger))
+                        leavesAnimator.ResetTrigger(animatorEnterTrigger);
+
+                    if (!string.IsNullOrEmpty(animatorExitTrigger))
+                        leavesAnimator.SetTrigger(animatorExitTrigger);
+                }
+            }
+
+            return;
+        }
+
+        if (leavesAnimation != null)
+        {
+            string clipToPlay = hidden ? enterAnimationName : exitAnimationName;
+
+            if (!string.IsNullOrEmpty(clipToPlay) && leavesAnimation.GetClip(clipToPlay) != null)
+            {
+                leavesAnimation.Play(clipToPlay);
+            }
+        }
+    }
+
+    private void SetInitialLeavesState()
+    {
+        if (leavesAnimator != null)
+        {
+            if (useAnimatorBool && !string.IsNullOrEmpty(animatorHiddenBool))
+            {
+                leavesAnimator.SetBool(animatorHiddenBool, false);
+            }
+
+            return;
+        }
+
+        if (leavesAnimation != null)
+        {
+            if (!string.IsNullOrEmpty(exitAnimationName) && leavesAnimation.GetClip(exitAnimationName) != null)
+            {
+                leavesAnimation.Play(exitAnimationName);
+                leavesAnimation[exitAnimationName].speed = 0f;
+                leavesAnimation[exitAnimationName].time = leavesAnimation[exitAnimationName].length;
+                leavesAnimation.Sample();
+                leavesAnimation.Stop();
+            }
+        }
     }
 
     private void SetExtraHiddenObjects(bool hidden)
