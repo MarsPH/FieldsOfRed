@@ -19,6 +19,8 @@ public class MonsterKillPlayer : MonoBehaviour
     [Header("Fade")]
     [SerializeField] private Image redFadeImage;
     [SerializeField] private bool useUnscaledTime = true;
+    [SerializeField] [Min(0.05f)] private float fadeDurationMultiplier = 1f;
+    [SerializeField] private bool holdUntilSoundEnds = true;
 
     [Header("Options")]
     [SerializeField] private bool useTrigger = true;
@@ -79,7 +81,7 @@ public class MonsterKillPlayer : MonoBehaviour
 
     private IEnumerator DeathSequence()
     {
-        float duration = 0f;
+        float soundDuration = 0f;
 
         if (deathAudioSource != null && deathSound != null)
         {
@@ -87,29 +89,24 @@ public class MonsterKillPlayer : MonoBehaviour
             deathAudioSource.clip = deathSound;
             deathAudioSource.loop = false;
             deathAudioSource.Play();
-            duration = deathSound.length;
+            soundDuration = deathSound.length;
         }
 
-        if (duration <= 0f)
-        {
-            if (redFadeImage != null)
-            {
-                Color instantColor = redFadeImage.color;
-                instantColor.a = 1f;
-                redFadeImage.color = instantColor;
-            }
+        float fadeDuration = soundDuration;
 
-            LoadEndScene();
-            yield break;
-        }
+        if (soundDuration > 0f)
+            fadeDuration = soundDuration * fadeDurationMultiplier;
+
+        if (fadeDuration <= 0f)
+            fadeDuration = 0.01f;
 
         float timer = 0f;
 
-        while (timer < duration)
+        while (timer < fadeDuration)
         {
             timer += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
 
-            float t = Mathf.Clamp01(timer / duration);
+            float t = Mathf.Clamp01(timer / fadeDuration);
 
             if (redFadeImage != null)
             {
@@ -126,6 +123,19 @@ public class MonsterKillPlayer : MonoBehaviour
             Color finalColor = redFadeImage.color;
             finalColor.a = 1f;
             redFadeImage.color = finalColor;
+        }
+
+        if (holdUntilSoundEnds && soundDuration > fadeDuration)
+        {
+            float remaining = soundDuration - fadeDuration;
+
+            if (remaining > 0f)
+            {
+                if (useUnscaledTime)
+                    yield return new WaitForSecondsRealtime(remaining);
+                else
+                    yield return new WaitForSeconds(remaining);
+            }
         }
 
         LoadEndScene();
