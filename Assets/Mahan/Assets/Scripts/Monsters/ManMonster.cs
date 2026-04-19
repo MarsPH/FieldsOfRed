@@ -39,6 +39,10 @@ public class ManMonster : MonoBehaviour
     private float patrolWaitCounter;
     private bool hasPatrolDestination;
 
+    private float patrolLoopTime;
+    private float slowChaseLoopTime;
+    private float fastChaseLoopTime;
+
     void Reset()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -59,7 +63,10 @@ public class ManMonster : MonoBehaviour
         agent.updateRotation = false;
         agent.updateUpAxis = true;
 
-        ChangeState(MonsterState.Patrol);
+        currentState = MonsterState.Patrol;
+        ApplyStateSettings(currentState);
+        PlayStateLoop(currentState);
+
         PickNewPatrolPoint();
     }
 
@@ -75,33 +82,30 @@ public class ManMonster : MonoBehaviour
 
     void UpdateStateMachine()
     {
+        MonsterState targetState;
+
         if (playerHiding.IsHidden || playerHiding.IsTransitioning)
         {
-            if (currentState != MonsterState.Patrol)
-            {
-                ChangeState(MonsterState.Patrol);
-                PickNewPatrolPoint();
-            }
-
-            UpdatePatrol();
-            return;
-        }
-
-        if (playerLantern.IsOn())
-        {
-            if (currentState != MonsterState.ChaseFast)
-                ChangeState(MonsterState.ChaseFast);
-
-            agent.speed = fastChaseSpeed;
-            agent.SetDestination(player.position);
+            targetState = MonsterState.Patrol;
         }
         else
         {
-            if (currentState != MonsterState.ChaseSlow)
-                ChangeState(MonsterState.ChaseSlow);
+            targetState = playerLantern.IsOn() ? MonsterState.ChaseFast : MonsterState.ChaseSlow;
+        }
 
-            agent.speed = slowChaseSpeed;
-            agent.SetDestination(player.position);
+        if (currentState != targetState)
+            ChangeState(targetState);
+
+        switch (currentState)
+        {
+            case MonsterState.Patrol:
+                UpdatePatrol();
+                break;
+
+            case MonsterState.ChaseSlow:
+            case MonsterState.ChaseFast:
+                UpdateChase();
+                break;
         }
     }
 
@@ -119,6 +123,14 @@ public class ManMonster : MonoBehaviour
                 PickNewPatrolPoint();
             }
         }
+    }
+
+    void UpdateChase()
+    {
+        if (player == null)
+            return;
+
+        agent.SetDestination(player.position);
     }
 
     void PickNewPatrolPoint()
@@ -141,13 +153,20 @@ public class ManMonster : MonoBehaviour
 
     void RotateVisual()
     {
+        if (visualRoot == null)
+            return;
+
         Vector3 velocity = agent.velocity;
         velocity.y = 0f;
 
         if (velocity.sqrMagnitude > 0.05f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(velocity.normalized, Vector3.up);
-            visualRoot.rotation = Quaternion.Slerp(visualRoot.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            visualRoot.rotation = Quaternion.Slerp(
+                visualRoot.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
         }
     }
 
@@ -156,25 +175,72 @@ public class ManMonster : MonoBehaviour
         if (currentState == newState)
             return;
 
+        SaveCurrentLoopTime();
+
         currentState = newState;
 
-        switch (currentState)
+        ApplyStateSettings(currentState);
+        PlayStateLoop(currentState);
+
+        if (currentState == MonsterState.Patrol)
+        {
+            patrolWaitCounter = 0f;
+            PickNewPatrolPoint();
+        }
+    }
+
+    void ApplyStateSettings(MonsterState state)
+    {
+        switch (state)
         {
             case MonsterState.Patrol:
-                PlayLoop(patrolLoop);
+                agent.speed = patrolSpeed;
                 break;
 
             case MonsterState.ChaseSlow:
-                PlayLoop(slowChaseLoop);
+                agent.speed = slowChaseSpeed;
                 break;
 
             case MonsterState.ChaseFast:
-                PlayLoop(fastChaseLoop);
+                agent.speed = fastChaseSpeed;
                 break;
         }
     }
 
-    void PlayLoop(AudioClip clip)
+    void PlayStateLoop(MonsterState state)
+    {
+        switch (state)
+        {
+            case MonsterState.Patrol:
+                PlayLoop(patrolLoop, patrolLoopTime);
+                break;
+
+            case MonsterState.ChaseSlow:
+                PlayLoop(slowChaseLoop, slowChaseLoopTime);
+                break;
+
+            case MonsterState.ChaseFast:
+                PlayLoop(fastChaseLoop, fastChaseLoopTime);
+                break;
+        }
+    }
+
+    void SaveCurrentLoopTime()
+    {
+        if (audioSource == null || audioSource.clip == null)
+            return;
+
+        float currentTime = audioSource.time;
+
+        if (audioSource.clip == patrolLoop)
+            patrolLoopTime = currentTime;
+        else if (audioSource.clip == slowChaseLoop)
+            slowChaseLoopTime = currentTime;
+        else if (audioSource.clip == fastChaseLoop)
+            fastChaseLoopTime = currentTime;
+    }
+
+    void PlayLoop(AudioClip clip, float savedTime)
     {
         if (audioSource == null)
             return;
@@ -182,14 +248,22 @@ public class ManMonster : MonoBehaviour
         if (clip == null)
         {
             audioSource.Stop();
+            audioSource.clip = null;
             return;
         }
 
         if (audioSource.clip == clip && audioSource.isPlaying)
             return;
 
+        audioSource.Stop();
         audioSource.clip = clip;
         audioSource.loop = true;
+
+        if (clip.length > 0f)
+            audioSource.time = Mathf.Repeat(savedTime, clip.length);
+        else
+            audioSource.time = 0f;
+
         audioSource.Play();
     }
 
@@ -198,7 +272,11 @@ public class ManMonster : MonoBehaviour
         if (animator == null)
             return;
 
-        float speedPercent = agent.velocity.magnitude / fastChaseSpeed;
+        float speedPercent = 0f;
+
+        if (fastChaseSpeed > 0f)
+            speedPercent = agent.velocity.magnitude / fastChaseSpeed;
+
         animator.SetFloat("Speed", speedPercent);
     }
 }
