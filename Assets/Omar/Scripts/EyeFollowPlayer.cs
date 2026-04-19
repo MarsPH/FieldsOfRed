@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class EyeFollowPlayer : MonoBehaviour
 {
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip activationSound;
+    public bool playOnlyOnce = true;
+
+    private bool hasPlayedSound = false;
     [Header("Target")]
     public Transform player;
     public Camera playerCamera; // Assign the player's camera
@@ -50,18 +56,24 @@ public class EyeFollowPlayer : MonoBehaviour
 
     void CheckIfPlayerLooking()
     {
-        // Direction from camera to eye
         Vector3 directionToEye = (transform.position - playerCamera.transform.position).normalized;
-
-        // Angle between camera's forward and the direction toward the eye
         float angle = Vector3.Angle(playerCamera.transform.forward, directionToEye);
 
         if (angle <= activationAngle)
         {
             activated = true;
+
+            // Play sound when activated
+            if (audioSource != null && activationSound != null)
+            {
+                if (!playOnlyOnce || !hasPlayedSound)
+                {
+                    audioSource.PlayOneShot(activationSound);
+                    hasPlayedSound = true;
+                }
+            }
         }
     }
-
     void RotateTowardsPlayer()
     {
         Vector3 directionToPlayer = player.position - transform.position;
