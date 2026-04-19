@@ -8,13 +8,17 @@ public class Vocals : MonoBehaviour
 
   private void Awake()
   {
-    instance = this;
-  }
+    if (instance != null && instance != this)
+    {
+      Destroy(gameObject);
+      return;
+    }
 
-  private void Start()
-  {
+    instance = this;
+
     audioSource = gameObject.AddComponent<AudioSource>();
   }
+
 
   public void Say(AudioObject clip)
   {

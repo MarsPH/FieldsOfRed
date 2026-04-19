@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 698362dd6b5e5ce4983ca9d3a0337eea, type: 3}
+  m_Name: HesTooCloseTurnItOff
+  m_EditorClassIdentifier: Assembly-CSharp::AudioObject
+  audioClip: {fileID: 8300000, guid: cdea13bf9a8e67e4581624967187e329, type: 3}
+  subtitle: Hes too close, Turn it off
