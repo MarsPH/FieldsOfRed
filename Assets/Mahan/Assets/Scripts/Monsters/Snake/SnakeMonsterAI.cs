@@ -19,6 +19,10 @@ public class SnakeMonsterAI : MonoBehaviour
     public AudioSource audioSource;
     public LanternToggle playerLantern;
 
+    [Header("Startup Activation")]
+    public bool useStartupActivation = true;
+    public float activationRadius = 12f;
+
     [Header("Body")]
     public int startBodyCount = 6;
     public float bodyFollowSpeed = 10f;
@@ -68,6 +72,8 @@ public class SnakeMonsterAI : MonoBehaviour
     private float debugLookDot;
     private float debugFrontFaceDot;
 
+    private bool isActivated;
+
     void Reset()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -98,8 +104,18 @@ public class SnakeMonsterAI : MonoBehaviour
 
         currentState = SnakeState.Patrol;
         ApplyStateSettings(currentState);
-        PlayStateLoop(currentState);
-        PickNewPatrolPoint();
+
+        isActivated = !useStartupActivation;
+
+        if (isActivated)
+        {
+            PlayStateLoop(currentState);
+            PickNewPatrolPoint();
+        }
+        else
+        {
+            ForceIdleState();
+        }
     }
 
     void Update()
@@ -110,14 +126,73 @@ public class SnakeMonsterAI : MonoBehaviour
         if (bangTimer > 0f)
             bangTimer -= Time.deltaTime;
 
+        if (!isActivated)
+        {
+            CheckStartupActivation();
+            RotateHeadVisual();
+            UpdateBodyFollow();
+            return;
+        }
+
         UpdateStateMachine();
         RotateHeadVisual();
         UpdateBodyFollow();
         UpdateFrontLookBang();
     }
 
+    void CheckStartupActivation()
+    {
+        Vector3 snakePos = transform.position;
+        Vector3 playerPos = player.position;
+
+        snakePos.y = 0f;
+        playerPos.y = 0f;
+
+        float sqrDistance = (playerPos - snakePos).sqrMagnitude;
+        float sqrActivationRadius = activationRadius * activationRadius;
+
+        if (sqrDistance <= sqrActivationRadius)
+        {
+            ActivateSnake();
+        }
+    }
+
+    void ActivateSnake()
+    {
+        isActivated = true;
+
+        ApplyStateSettings(currentState);
+        PlayStateLoop(currentState);
+
+        if (currentState == SnakeState.Patrol)
+            PickNewPatrolPoint();
+    }
+
+    void ForceIdleState()
+    {
+        if (agent != null)
+        {
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
+            agent.isStopped = true;
+        }
+
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+            audioSource.clip = null;
+        }
+
+        hasPatrolDestination = false;
+        patrolWaitCounter = 0f;
+        wasLookingAtFront = false;
+    }
+
     void UpdateStateMachine()
     {
+        if (agent.isStopped)
+            agent.isStopped = false;
+
         SnakeState targetState = playerLantern.IsOn() ? SnakeState.Chase : SnakeState.Patrol;
 
         if (currentState != targetState)
@@ -365,6 +440,12 @@ public class SnakeMonsterAI : MonoBehaviour
         if (!drawDebug)
             return;
 
+        if (useStartupActivation)
+        {
+            Gizmos.color = isActivated ? Color.green : new Color(1f, 0.5f, 0f);
+            Gizmos.DrawWireSphere(transform.position, activationRadius);
+        }
+
         if (headVisual != null)
         {
             Gizmos.color = Color.blue;
@@ -394,6 +475,12 @@ public class SnakeMonsterAI : MonoBehaviour
     {
         if (!drawDebug)
             return;
+
+        if (useStartupActivation)
+        {
+            Gizmos.color = isActivated ? Color.green : new Color(1f, 0.5f, 0f);
+            Gizmos.DrawWireSphere(transform.position, activationRadius);
+        }
 
         if (headVisual != null)
         {

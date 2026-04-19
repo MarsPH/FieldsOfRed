@@ -7,7 +7,8 @@ public class ManMonster : MonoBehaviour
     {
         Patrol,
         ChaseSlow,
-        ChaseFast
+        ChaseFast,
+        FleeAndVanish
     }
 
     [Header("References")]
@@ -29,6 +30,7 @@ public class ManMonster : MonoBehaviour
     public float patrolSpeed = 2.5f;
     public float slowChaseSpeed = 3.5f;
     public float fastChaseSpeed = 5.5f;
+    public float fleeSpeed = 7f;
     public float rotationSpeed = 8f;
 
     [Header("State Music")]
@@ -42,6 +44,11 @@ public class ManMonster : MonoBehaviour
     public AudioClip fastChaseFootsteps;
     public float footstepMinVelocity = 0.15f;
 
+    [Header("Flee And Vanish")]
+    public float fleeDistanceFromPlayer = 20f;
+    public float fleeReachDistance = 1.5f;
+    public float vanishDelay = 0.2f;
+
     private MonsterState currentState = MonsterState.Patrol;
     private float patrolWaitCounter;
     private bool hasPatrolDestination;
@@ -49,6 +56,10 @@ public class ManMonster : MonoBehaviour
     private float patrolLoopTime;
     private float slowChaseLoopTime;
     private float fastChaseLoopTime;
+
+    private bool fleeTriggered;
+    private bool isVanishing;
+    private Vector3 fleeTarget;
 
     void Reset()
     {
@@ -89,10 +100,21 @@ public class ManMonster : MonoBehaviour
 
     void Update()
     {
-        if (player == null || playerHiding == null || playerLantern == null || agent == null)
+        if (agent == null)
             return;
 
-        UpdateStateMachine();
+        if (!fleeTriggered)
+        {
+            if (player == null || playerHiding == null || playerLantern == null)
+                return;
+
+            UpdateStateMachine();
+        }
+        else
+        {
+            UpdateFleeAndVanish();
+        }
+
         RotateVisual();
         UpdateAnimator();
         UpdateFootstepsPlayback();
@@ -151,6 +173,17 @@ public class ManMonster : MonoBehaviour
         agent.SetDestination(player.position);
     }
 
+    void UpdateFleeAndVanish()
+    {
+        if (isVanishing)
+            return;
+
+        if (!agent.pathPending && agent.remainingDistance <= fleeReachDistance)
+        {
+            StartVanish();
+        }
+    }
+
     void PickNewPatrolPoint()
     {
         for (int i = 0; i < 20; i++)
@@ -194,7 +227,6 @@ public class ManMonster : MonoBehaviour
             return;
 
         SaveCurrentMusicTime();
-
         currentState = newState;
 
         ApplyStateSettings(currentState);
@@ -223,6 +255,10 @@ public class ManMonster : MonoBehaviour
             case MonsterState.ChaseFast:
                 agent.speed = fastChaseSpeed;
                 break;
+
+            case MonsterState.FleeAndVanish:
+                agent.speed = fleeSpeed;
+                break;
         }
     }
 
@@ -240,6 +276,11 @@ public class ManMonster : MonoBehaviour
 
             case MonsterState.ChaseFast:
                 PlayMusicLoop(fastChaseLoop, fastChaseLoopTime);
+                break;
+
+            case MonsterState.FleeAndVanish:
+                if (musicSource != null)
+                    musicSource.Stop();
                 break;
         }
     }
@@ -306,6 +347,10 @@ public class ManMonster : MonoBehaviour
             case MonsterState.ChaseFast:
                 targetClip = fastChaseFootsteps;
                 break;
+
+            case MonsterState.FleeAndVanish:
+                targetClip = fastChaseFootsteps;
+                break;
         }
 
         if (footstepSource.clip == targetClip)
@@ -346,9 +391,50 @@ public class ManMonster : MonoBehaviour
 
         float speedPercent = 0f;
 
-        if (fastChaseSpeed > 0f)
-            speedPercent = agent.velocity.magnitude / fastChaseSpeed;
+        if (fleeSpeed > 0f)
+            speedPercent = agent.velocity.magnitude / fleeSpeed;
 
         animator.SetFloat("Speed", speedPercent);
+    }
+
+    public void TriggerFleeAndVanish()
+    {
+        if (fleeTriggered || player == null || agent == null)
+            return;
+
+        fleeTriggered = true;
+        ChangeState(MonsterState.FleeAndVanish);
+
+        Vector3 awayDirection = (transform.position - player.position).normalized;
+        if (awayDirection.sqrMagnitude < 0.01f)
+            awayDirection = -transform.forward;
+
+        Vector3 desiredPoint = transform.position + awayDirection * fleeDistanceFromPlayer;
+
+        if (NavMesh.SamplePosition(desiredPoint, out NavMeshHit hit, fleeDistanceFromPlayer, NavMesh.AllAreas))
+        {
+            fleeTarget = hit.position;
+        }
+        else
+        {
+            fleeTarget = desiredPoint;
+        }
+
+        agent.isStopped = false;
+        agent.SetDestination(fleeTarget);
+    }
+
+    void StartVanish()
+    {
+        if (isVanishing)
+            return;
+
+        isVanishing = true;
+        Invoke(nameof(VanishNow), vanishDelay);
+    }
+
+    void VanishNow()
+    {
+        gameObject.SetActive(false);
     }
 }

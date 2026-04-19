@@ -173,6 +173,8 @@ MonoBehaviour:
   headVisual: {fileID: 577368516349673522}
   audioSource: {fileID: 4480821030088276584}
   playerLantern: {fileID: 0}
+  useStartupActivation: 1
+  activationRadius: 50
   startBodyCount: 10
   bodyFollowSpeed: 10
   segmentSpacing: 5
