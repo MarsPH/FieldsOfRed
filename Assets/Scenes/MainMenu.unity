@@ -136,6 +136,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 0}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 0}
   playerCamera: {fileID: 0}
   activationAngle: 5
@@ -199,10 +202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Exit
-
-
-'
+  m_text: Leave
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a562d0f375db7f3478fb10b3c6a15d87, type: 2}
   m_sharedMaterial: {fileID: 2098921913397807003, guid: a562d0f375db7f3478fb10b3c6a15d87, type: 2}
@@ -384,6 +384,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 0}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 0}
   playerCamera: {fileID: 0}
   activationAngle: 5
@@ -424,7 +427,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 1112, y: 55}
+  m_AnchoredPosition: {x: 1112, y: 102}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &66550274
@@ -1027,6 +1030,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 0}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 0}
   playerCamera: {fileID: 0}
   activationAngle: 5
@@ -1182,6 +1188,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 0}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 0}
   playerCamera: {fileID: 0}
   activationAngle: 5
@@ -1205,6 +1214,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 0}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 0}
   playerCamera: {fileID: 0}
   activationAngle: 5
@@ -6618,7 +6630,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 382, y: 89}
+  m_AnchoredPosition: {x: 382, y: 122}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &960649065
@@ -6842,7 +6854,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -876.0006, y: 15}
+  m_AnchoredPosition: {x: -876.0006, y: 54}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1086879981
@@ -6956,6 +6968,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 0}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 0}
   playerCamera: {fileID: 0}
   activationAngle: 5
@@ -6979,6 +6994,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 0}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 0}
   playerCamera: {fileID: 0}
   activationAngle: 5
@@ -7087,6 +7105,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 0}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 0}
   playerCamera: {fileID: 0}
   activationAngle: 5
@@ -12364,6 +12385,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 0}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 0}
   playerCamera: {fileID: 0}
   activationAngle: 5
@@ -12427,9 +12451,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Start
-
-'
+  m_text: Enter
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a562d0f375db7f3478fb10b3c6a15d87, type: 2}
   m_sharedMaterial: {fileID: 2098921913397807003, guid: a562d0f375db7f3478fb10b3c6a15d87, type: 2}

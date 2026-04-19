@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 698362dd6b5e5ce4983ca9d3a0337eea, type: 3}
-  m_Name: SubtitlesScript
+  m_Name: TooLate
   m_EditorClassIdentifier: Assembly-CSharp::AudioObject
-  audioClip: {fileID: 0}
-  subtitle: 
+  audioClip: {fileID: 8300000, guid: 4cbc7e8d5acc5554d8b17dbe59514166, type: 3}
+  subtitle: Too late
