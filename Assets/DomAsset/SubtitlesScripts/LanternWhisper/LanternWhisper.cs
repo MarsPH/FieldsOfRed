@@ -5,12 +5,11 @@ public class LanternWhispers : MonoBehaviour
     [Header("References")]
     public Transform player;
     public Transform monster;
+    public PlayerHiding playerHiding;
+    public LanternToggle lanternToggle;
 
     [Header("Distances")]
     public float dangerDistance = 10f;
-
-    [Header("State")]
-    public bool isInBush = false;
 
     [Header("Voice Lines")]
     public AudioObject[] dangerLines;
@@ -23,21 +22,32 @@ public class LanternWhispers : MonoBehaviour
     [Range(0f, 1f)]
     public float speakChance = 0.7f;
 
-    float nextSpeakTime;
+    [Header("Debug")]
+    public bool drawDebug = true;
+    public Color dangerRangeColor = new Color(1f, 0f, 0f, 0.2f);
+    public Color hiddenColor = new Color(0f, 1f, 0f, 0.2f);
+
+    private float nextSpeakTime;
 
     void Update()
     {
+        if (player == null || monster == null || playerHiding == null || lanternToggle == null)
+            return;
+
         if (Time.time < nextSpeakTime)
             return;
 
         float distance = Vector3.Distance(player.position, monster.position);
 
-        // Decide what type of line to play
-        if (distance <= dangerDistance && dangerLines.Length > 0)
+        bool isHidden = playerHiding.IsHidden;
+        bool isLanternOn = lanternToggle.IsOn();
+        bool inDangerRange = distance <= dangerDistance;
+
+        if (inDangerRange && isLanternOn && dangerLines.Length > 0)
         {
             TrySpeak(dangerLines);
         }
-        else if (isInBush && bushLines.Length > 0)
+        else if (isHidden && bushLines.Length > 0)
         {
             TrySpeak(bushLines);
         }
@@ -45,8 +55,19 @@ public class LanternWhispers : MonoBehaviour
 
     void TrySpeak(AudioObject[] lines)
     {
-        // Chance check (prevents robotic spam)
+        if (lines == null || lines.Length == 0)
+        {
+            SetNextTime();
+            return;
+        }
+
         if (Random.value > speakChance)
+        {
+            SetNextTime();
+            return;
+        }
+
+        if (Vocals.instance == null)
         {
             SetNextTime();
             return;
@@ -61,5 +82,35 @@ public class LanternWhispers : MonoBehaviour
     void SetNextTime()
     {
         nextSpeakTime = Time.time + Random.Range(minDelay, maxDelay);
+    }
+
+    void OnDrawGizmos()
+    {
+        if (!drawDebug || monster == null)
+            return;
+
+        Gizmos.color = dangerRangeColor;
+        Gizmos.DrawSphere(monster.position, dangerDistance);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(monster.position, dangerDistance);
+
+        if (player != null)
+        {
+            float distance = Vector3.Distance(player.position, monster.position);
+            bool inDangerRange = distance <= dangerDistance;
+
+            Gizmos.color = inDangerRange ? Color.red : Color.yellow;
+            Gizmos.DrawLine(monster.position, player.position);
+
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawSphere(player.position, 0.2f);
+        }
+
+        if (playerHiding != null && player != null)
+        {
+            Gizmos.color = playerHiding.IsHidden ? hiddenColor : new Color(0.3f, 0.3f, 0.3f, 0.15f);
+            Gizmos.DrawCube(player.position + Vector3.up * 1.2f, new Vector3(0.6f, 0.6f, 0.6f));
+        }
     }
 }

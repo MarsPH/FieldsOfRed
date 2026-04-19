@@ -26,6 +26,12 @@ public class PlayerHiding : MonoBehaviour
     [SerializeField] private float hiddenCameraYOffset = -0.35f;
     [SerializeField] private float cameraMoveSpeed = 8f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource hideAudioSource;
+    [SerializeField] private AudioClip enterHideSound;
+    [SerializeField] private AudioClip exitHideSound;
+    [SerializeField] [Range(0f, 1f)] private float hideSoundVolume = 1f;
+
     [Header("Animator Option")]
     [SerializeField] private Animator leavesAnimator;
     [SerializeField] private bool useAnimatorBool = false;
@@ -52,6 +58,7 @@ public class PlayerHiding : MonoBehaviour
     [SerializeField] private bool canHide;
     [SerializeField] private bool isHidden;
     [SerializeField] private HideState currentState = HideState.None;
+    [SerializeField] private bool debugLogs = true;
 
     private PlayerMovement playerMovement;
     private HideZone currentZone;
@@ -68,6 +75,9 @@ public class PlayerHiding : MonoBehaviour
     private void Awake()
     {
         playerMovement = GetComponent<PlayerMovement>();
+
+        if (hideAudioSource == null)
+            hideAudioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -101,8 +111,13 @@ public class PlayerHiding : MonoBehaviour
         currentZone = zone;
         canHide = true;
 
+        LogDebug("Entered hide zone: " + zone.name);
+
         if (!isHidden && !IsTransitioning)
+        {
+            PlayEnterHideSoundImmediate();
             enterRoutine = StartCoroutine(EnterHideRoutine());
+        }
     }
 
     public void ExitHideZone(HideZone zone)
@@ -116,11 +131,14 @@ public class PlayerHiding : MonoBehaviour
         canHide = false;
         currentZone = null;
 
+        LogDebug("Exited hide zone: " + zone.name);
+
         if (IsTransitioning)
         {
             CancelEnterRoutine();
             currentState = HideState.None;
             SetHiddenVisuals(false);
+            PlayExitHideSoundImmediate();
             ApplyNormalMovementState();
         }
 
@@ -131,10 +149,9 @@ public class PlayerHiding : MonoBehaviour
     private IEnumerator EnterHideRoutine()
     {
         currentState = HideState.Entering;
+        LogDebug("EnterHideRoutine started.");
 
-        // 🔥 PLAY ENTER ANIMATION IMMEDIATELY
         SetHiddenVisuals(true);
-
         ApplyEnteringMovementState();
 
         if (enterHideDuration > 0f)
@@ -144,6 +161,7 @@ public class PlayerHiding : MonoBehaviour
 
         if (!canHide || currentZone == null)
         {
+            LogDebug("EnterHideRoutine aborted.");
             currentState = HideState.None;
             SetHiddenVisuals(false);
             ApplyNormalMovementState();
@@ -153,6 +171,7 @@ public class PlayerHiding : MonoBehaviour
         isHidden = true;
         currentState = HideState.Hidden;
 
+        LogDebug("Player is now hidden.");
         ApplyHiddenMovementState();
     }
 
@@ -163,10 +182,11 @@ public class PlayerHiding : MonoBehaviour
         isHidden = false;
         currentState = HideState.None;
 
-        // 🔥 PLAY EXIT ANIMATION
         SetHiddenVisuals(false);
-
+        PlayExitHideSoundImmediate();
         ApplyNormalMovementState();
+
+        LogDebug("Stopped hiding immediately.");
     }
 
     private void CancelEnterRoutine()
@@ -216,32 +236,56 @@ public class PlayerHiding : MonoBehaviour
         currentTargetVignetteAlpha = hidden ? hiddenVignetteAlpha : 0f;
     }
 
+    private void PlayEnterHideSoundImmediate()
+    {
+        PlaySpecificHideSound(enterHideSound, "ENTER");
+    }
+
+    private void PlayExitHideSoundImmediate()
+    {
+        PlaySpecificHideSound(exitHideSound, "EXIT");
+    }
+
+    private void PlaySpecificHideSound(AudioClip clipToPlay, string soundLabel)
+    {
+        LogDebug("Trying to play " + soundLabel + " hide sound.");
+
+        if (hideAudioSource == null)
+        {
+            LogDebug(soundLabel + " sound failed. No AudioSource.");
+            return;
+        }
+
+        if (clipToPlay == null)
+        {
+            LogDebug(soundLabel + " sound failed. Clip is null.");
+            return;
+        }
+
+        hideAudioSource.PlayOneShot(clipToPlay, hideSoundVolume);
+        LogDebug(soundLabel + " PlayOneShot called: " + clipToPlay.name);
+    }
+
     private void PlayLeaves(bool hidden)
     {
-        Debug.Log("PlayLeaves: hidden = " + hidden);
-
         if (leavesAnimator != null)
         {
             if (useAnimatorTriggers)
             {
                 if (hidden)
                 {
-                    Debug.Log("TRIGGER ENTER HIDE");
                     leavesAnimator.ResetTrigger(animatorExitTrigger);
                     leavesAnimator.SetTrigger(animatorEnterTrigger);
                 }
                 else
                 {
-                    Debug.Log("TRIGGER EXIT HIDE");
                     leavesAnimator.ResetTrigger(animatorEnterTrigger);
                     leavesAnimator.SetTrigger(animatorExitTrigger);
                 }
             }
 
             if (useAnimatorBool)
-            {
                 leavesAnimator.SetBool(animatorHiddenBool, hidden);
-            }
 
             return;
         }
@@ -251,9 +295,7 @@ public class PlayerHiding : MonoBehaviour
             string clipToPlay = hidden ? enterAnimationName : exitAnimationName;
 
             if (!string.IsNullOrEmpty(clipToPlay) && leavesAnimation.GetClip(clipToPlay) != null)
-            {
                 leavesAnimation.Play(clipToPlay);
-            }
         }
     }
 
@@ -325,5 +367,13 @@ public class PlayerHiding : MonoBehaviour
             currentTargetVignetteAlpha,
             vignetteFadeSpeed * Time.deltaTime
         );
+    }
+
+    private void LogDebug(string message)
+    {
+        if (!debugLogs)
+            return;
+
+        Debug.Log("[PlayerHiding] " + message, this);
     }
 }

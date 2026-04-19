@@ -15,8 +15,8 @@ EditorBuildSettings:
     path: Assets/Scenes/omar test scene.unity
     guid: 383b6d7322c3dfd438fafd476f9df719
   - enabled: 1
-    path: Assets/Scenes/EndScreen1.unity
-    guid: f779cd96e3c36414dbd0c9733b5cfc68
+    path: Assets/Scenes/EndScreen.unity
+    guid: f2ed25b58710ccb46bb16eba9f92c004
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
