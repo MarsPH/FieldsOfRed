@@ -15,7 +15,7 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
   m_Fog: 1
-  m_FogColor: {r: 0.19999999, g: 0, b: 0.007547187, a: 1}
+  m_FogColor: {r: 0.10188681, g: 0, b: 0.003995549, a: 1}
   m_FogMode: 1
   m_FogDensity: 0.001
   m_LinearFogStart: 0
@@ -136,6 +136,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 1849833198}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 8462363885245114134}
   playerCamera: {fileID: 2003270896758238796}
   activationAngle: 5
@@ -334,6 +337,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 1849833198}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 8462363885245114134}
   playerCamera: {fileID: 2003270896758238796}
   activationAngle: 5
@@ -843,6 +849,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 1849833198}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 8462363885245114134}
   playerCamera: {fileID: 2003270896758238796}
   activationAngle: 5
@@ -979,6 +988,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 1849833198}
+  activationSound: {fileID: 8300000, guid: e0eae6268439fca439ad1580af959b77, type: 3}
+  playOnlyOnce: 1
   player: {fileID: 8462363885245114134}
   playerCamera: {fileID: 2003270896758238796}
   activationAngle: 5
@@ -1002,6 +1014,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 1849833198}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 8462363885245114134}
   playerCamera: {fileID: 2003270896758238796}
   activationAngle: 5
@@ -6366,6 +6381,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 1849833198}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 8462363885245114134}
   playerCamera: {fileID: 2003270896758238796}
   activationAngle: 5
@@ -6577,6 +6595,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 1849833198}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 8462363885245114134}
   playerCamera: {fileID: 2003270896758238796}
   activationAngle: 5
@@ -6775,6 +6796,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 1849833198}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 8462363885245114134}
   playerCamera: {fileID: 2003270896758238796}
   activationAngle: 5
@@ -12457,6 +12481,135 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!1 &1849833197
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1849833199}
+  - component: {fileID: 1849833198}
+  m_Layer: 0
+  m_Name: PianoMaker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &1849833198
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849833197}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &1849833199
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1849833197}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 994, y: 269, z: 756}
+  m_LocalScale: {x: 35.247047, y: 35.247055, z: 35.247055}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1900093249
 GameObject:
   m_ObjectHideFlags: 0
@@ -12482,7 +12635,7 @@ Transform:
   m_GameObject: {fileID: 1900093249}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1248, y: 825, z: 246}
+  m_LocalPosition: {x: 1248, y: 1286, z: 246}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12514,6 +12667,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fdaa376b7f382c4d8f4dbe1b9ee3470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EyeFollowPlayer
+  audioSource: {fileID: 1849833198}
+  activationSound: {fileID: 0}
+  playOnlyOnce: 1
   player: {fileID: 8462363885245114134}
   playerCamera: {fileID: 2003270896758238796}
   activationAngle: 5
@@ -12727,6 +12883,14 @@ PrefabInstance:
       propertyPath: jumpSpeed
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2629441568724003899, guid: 4cbc7818d3686db428ee9a9721561488, type: 3}
+      propertyPath: m_TargetDisplay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2629441568724003899, guid: 4cbc7818d3686db428ee9a9721561488, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: a7a343f87080fe74384fbd45a29efb47, type: 2}
     - target: {fileID: 2705926828649065851, guid: 4cbc7818d3686db428ee9a9721561488, type: 3}
       propertyPath: m_LocalPosition.x
       value: 914.58
@@ -12767,6 +12931,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5109354955454875796, guid: 4cbc7818d3686db428ee9a9721561488, type: 3}
+      propertyPath: m_TargetDisplay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109354955454875796, guid: 4cbc7818d3686db428ee9a9721561488, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: a7a343f87080fe74384fbd45a29efb47, type: 2}
     - target: {fileID: 5729752919870974691, guid: 4cbc7818d3686db428ee9a9721561488, type: 3}
       propertyPath: audioSource
       value: 
@@ -12859,6 +13031,7 @@ SceneRoots:
   - {fileID: 1422237854}
   - {fileID: 426219564}
   - {fileID: 648236852}
+  - {fileID: 1849833199}
   - {fileID: 1900093250}
   - {fileID: 12679549}
   - {fileID: 1678627256}
