@@ -12,6 +12,7 @@ public class SnakeMonsterAI : MonoBehaviour
 
     [Header("References")]
     public Transform player;
+    public Camera playerCamera;
     public NavMeshAgent agent;
     public GameObject bodyPrefab;
     public Transform headVisual;
@@ -31,6 +32,18 @@ public class SnakeMonsterAI : MonoBehaviour
     [Header("Sounds")]
     public AudioClip patrolLoop;
     public AudioClip chaseLoop;
+    public AudioClip frontBangClip;
+
+    [Header("Front Look Bang")]
+    public float bangCheckDistance = 8f;
+    [Range(-1f, 1f)] public float lookDotThreshold = 0.9f;
+    [Range(-1f, 1f)] public float frontFaceDotThreshold = 0.35f;
+    public float bangCooldown = 1f;
+    public bool onlyInChase = false;
+
+    [Header("Debug")]
+    public bool drawDebug = true;
+    public float debugRayLength = 3f;
 
     [Header("Movement Speeds")]
     public float patrolSpeed = 2.5f;
@@ -45,6 +58,15 @@ public class SnakeMonsterAI : MonoBehaviour
 
     private float patrolLoopTime;
     private float chaseLoopTime;
+
+    private bool wasLookingAtFront;
+    private float bangTimer;
+
+    private bool debugLookingAtHead;
+    private bool debugSeeingFrontFace;
+    private bool debugShouldBang;
+    private float debugLookDot;
+    private float debugFrontFaceDot;
 
     void Reset()
     {
@@ -62,6 +84,9 @@ public class SnakeMonsterAI : MonoBehaviour
 
         if (headVisual == null)
             headVisual = transform;
+
+        if (playerCamera == null)
+            playerCamera = Camera.main;
 
         agent.updateRotation = false;
         agent.updateUpAxis = true;
@@ -82,9 +107,13 @@ public class SnakeMonsterAI : MonoBehaviour
         if (player == null || agent == null || playerLantern == null)
             return;
 
+        if (bangTimer > 0f)
+            bangTimer -= Time.deltaTime;
+
         UpdateStateMachine();
         RotateHeadVisual();
         UpdateBodyFollow();
+        UpdateFrontLookBang();
     }
 
     void UpdateStateMachine()
@@ -270,6 +299,56 @@ public class SnakeMonsterAI : MonoBehaviour
         }
     }
 
+    void UpdateFrontLookBang()
+    {
+        debugLookingAtHead = false;
+        debugSeeingFrontFace = false;
+        debugShouldBang = false;
+        debugLookDot = -999f;
+        debugFrontFaceDot = -999f;
+
+        if (frontBangClip == null || playerCamera == null || headVisual == null || audioSource == null)
+            return;
+
+        if (onlyInChase && currentState != SnakeState.Chase)
+        {
+            wasLookingAtFront = false;
+            return;
+        }
+
+        Vector3 cameraPos = playerCamera.transform.position;
+        Vector3 toSnakeHead = headVisual.position - cameraPos;
+
+        float distance = toSnakeHead.magnitude;
+        if (distance > bangCheckDistance || distance < 0.001f)
+        {
+            wasLookingAtFront = false;
+            return;
+        }
+
+        Vector3 cameraForward = playerCamera.transform.forward.normalized;
+        Vector3 dirToSnakeHead = toSnakeHead.normalized;
+
+        debugLookDot = Vector3.Dot(cameraForward, dirToSnakeHead);
+        debugLookingAtHead = debugLookDot >= lookDotThreshold;
+
+        Vector3 snakeForward = headVisual.forward.normalized;
+        Vector3 headToCamera = (cameraPos - headVisual.position).normalized;
+
+        debugFrontFaceDot = Vector3.Dot(snakeForward, headToCamera);
+        debugSeeingFrontFace = debugFrontFaceDot >= frontFaceDotThreshold;
+
+        debugShouldBang = debugLookingAtHead && debugSeeingFrontFace;
+
+        if (debugShouldBang && !wasLookingAtFront && bangTimer <= 0f)
+        {
+            audioSource.PlayOneShot(frontBangClip);
+            bangTimer = bangCooldown;
+        }
+
+        wasLookingAtFront = debugShouldBang;
+    }
+
     public void GrowSnake()
     {
         Vector3 spawnPos = transform.position;
@@ -279,5 +358,57 @@ public class SnakeMonsterAI : MonoBehaviour
 
         GameObject newBody = Instantiate(bodyPrefab, spawnPos, Quaternion.identity);
         bodyParts.Add(newBody);
+    }
+
+    void OnDrawGizmos()
+    {
+        if (!drawDebug)
+            return;
+
+        if (headVisual != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(headVisual.position, headVisual.forward.normalized * debugRayLength);
+
+            Gizmos.color = debugSeeingFrontFace ? Color.green : Color.red;
+            Gizmos.DrawWireSphere(headVisual.position, 0.25f);
+        }
+
+        if (playerCamera != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawRay(playerCamera.transform.position, playerCamera.transform.forward.normalized * debugRayLength);
+        }
+
+        if (playerCamera != null && headVisual != null)
+        {
+            Gizmos.color = debugLookingAtHead ? Color.green : Color.red;
+            Gizmos.DrawLine(playerCamera.transform.position, headVisual.position);
+
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireSphere(playerCamera.transform.position, bangCheckDistance);
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (!drawDebug)
+            return;
+
+        if (headVisual != null)
+        {
+            Debug.DrawRay(headVisual.position, headVisual.forward.normalized * debugRayLength, Color.blue);
+        }
+
+        if (playerCamera != null)
+        {
+            Debug.DrawRay(playerCamera.transform.position, playerCamera.transform.forward.normalized * debugRayLength, Color.yellow);
+        }
+
+        if (playerCamera != null && headVisual != null)
+        {
+            Color lineColor = debugShouldBang ? Color.magenta : (debugLookingAtHead ? Color.green : Color.red);
+            Debug.DrawLine(playerCamera.transform.position, headVisual.position, lineColor);
+        }
     }
 }
