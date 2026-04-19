@@ -7,6 +7,11 @@ public class LanternToggle : MonoBehaviour
     public GameObject flameObject;
     public Light flameLight;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip turnOnSound;
+    public AudioClip turnOffSound;
+    
     [Header("Input")]
     public KeyCode toggleKey = KeyCode.E;
 
@@ -32,6 +37,7 @@ public class LanternToggle : MonoBehaviour
     private bool isOn;
     private bool isBusy;
     private Coroutine toggleRoutine;
+    private bool hasInitialized;
 
     void Start()
     {
@@ -41,9 +47,10 @@ public class LanternToggle : MonoBehaviour
         if (useFuel && currentFuel <= 0f)
             isOn = false;
 
-        ApplyStateImmediate();
+        hasInitialized = false;
+        ApplyStateImmediate(); // no sound allowed yet
+        hasInitialized = true;
     }
-
     void Update()
     {
         if (Input.GetKeyDown(toggleKey) && canToggle && !isBusy)
@@ -135,8 +142,19 @@ public class LanternToggle : MonoBehaviour
 
         if (flameLight != null)
             flameLight.enabled = isOn;
-    }
 
+        if (!hasInitialized || audioSource == null)
+            return;
+
+        if (isOn && turnOnSound != null)
+        {
+            audioSource.PlayOneShot(turnOnSound);
+        }
+        else if (!isOn && turnOffSound != null)
+        {
+            audioSource.PlayOneShot(turnOffSound);
+        }
+    }
     public void AddFuel(float amount)
     {
         currentFuel = Mathf.Clamp(currentFuel + amount, 0f, maxFuel);
