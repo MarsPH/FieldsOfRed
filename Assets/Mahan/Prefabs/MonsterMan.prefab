@@ -142,7 +142,8 @@ MonoBehaviour:
   playerLantern: {fileID: 0}
   agent: {fileID: 4234686285183174408}
   visualRoot: {fileID: 3975096224102010637}
-  audioSource: {fileID: 2222845611042126317}
+  musicSource: {fileID: 2222845611042126317}
+  footstepSource: {fileID: 2222845611042126317}
   animator: {fileID: 0}
   patrolRadius: 50
   patrolPointReachDistance: 1.2
@@ -152,8 +153,12 @@ MonoBehaviour:
   fastChaseSpeed: 5.5
   rotationSpeed: 8
   patrolLoop: {fileID: 0}
-  slowChaseLoop: {fileID: 8300000, guid: 076d6fa7109277b46ac220233a438dc7, type: 3}
-  fastChaseLoop: {fileID: 8300000, guid: 7bdbdb3924c37724b8821cad3f193ab6, type: 3}
+  slowChaseLoop: {fileID: 8300000, guid: 9ecf00a3073976f4688e135ca6aef05e, type: 3}
+  fastChaseLoop: {fileID: 0}
+  patrolFootsteps: {fileID: 8300000, guid: 076d6fa7109277b46ac220233a438dc7, type: 3}
+  slowChaseFootsteps: {fileID: 8300000, guid: 076d6fa7109277b46ac220233a438dc7, type: 3}
+  fastChaseFootsteps: {fileID: 8300000, guid: 076d6fa7109277b46ac220233a438dc7, type: 3}
+  footstepMinVelocity: 0.15
 --- !u!195 &4234686285183174408
 NavMeshAgent:
   m_ObjectHideFlags: 0
