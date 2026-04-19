@@ -7,7 +7,8 @@ public class ManMonster : MonoBehaviour
     {
         Patrol,
         ChaseSlow,
-        ChaseFast
+        ChaseFast,
+        RunToPointAndVanish
     }
 
     [Header("References")]
@@ -29,6 +30,7 @@ public class ManMonster : MonoBehaviour
     public float patrolSpeed = 2.5f;
     public float slowChaseSpeed = 3.5f;
     public float fastChaseSpeed = 5.5f;
+    public float runAwaySpeed = 7f;
     public float rotationSpeed = 8f;
 
     [Header("State Music")]
@@ -42,6 +44,10 @@ public class ManMonster : MonoBehaviour
     public AudioClip fastChaseFootsteps;
     public float footstepMinVelocity = 0.15f;
 
+    [Header("Run To Point And Vanish")]
+    public float runPointReachDistance = 1.5f;
+    public float vanishDelay = 0.2f;
+
     private MonsterState currentState = MonsterState.Patrol;
     private float patrolWaitCounter;
     private bool hasPatrolDestination;
@@ -49,6 +55,10 @@ public class ManMonster : MonoBehaviour
     private float patrolLoopTime;
     private float slowChaseLoopTime;
     private float fastChaseLoopTime;
+
+    private bool runTriggered;
+    private bool isVanishing;
+    private Transform runTargetPoint;
 
     void Reset()
     {
@@ -89,10 +99,21 @@ public class ManMonster : MonoBehaviour
 
     void Update()
     {
-        if (player == null || playerHiding == null || playerLantern == null || agent == null)
+        if (agent == null)
             return;
 
-        UpdateStateMachine();
+        if (runTriggered)
+        {
+            UpdateRunToPointAndVanish();
+        }
+        else
+        {
+            if (player == null || playerHiding == null || playerLantern == null)
+                return;
+
+            UpdateStateMachine();
+        }
+
         RotateVisual();
         UpdateAnimator();
         UpdateFootstepsPlayback();
@@ -149,6 +170,23 @@ public class ManMonster : MonoBehaviour
             return;
 
         agent.SetDestination(player.position);
+    }
+
+    void UpdateRunToPointAndVanish()
+    {
+        if (isVanishing)
+            return;
+
+        if (runTargetPoint == null)
+        {
+            StartVanish();
+            return;
+        }
+
+        if (!agent.pathPending && agent.remainingDistance <= runPointReachDistance)
+        {
+            StartVanish();
+        }
     }
 
     void PickNewPatrolPoint()
@@ -223,6 +261,10 @@ public class ManMonster : MonoBehaviour
             case MonsterState.ChaseFast:
                 agent.speed = fastChaseSpeed;
                 break;
+
+            case MonsterState.RunToPointAndVanish:
+                agent.speed = runAwaySpeed;
+                break;
         }
     }
 
@@ -240,6 +282,11 @@ public class ManMonster : MonoBehaviour
 
             case MonsterState.ChaseFast:
                 PlayMusicLoop(fastChaseLoop, fastChaseLoopTime);
+                break;
+
+            case MonsterState.RunToPointAndVanish:
+                if (musicSource != null)
+                    musicSource.Stop();
                 break;
         }
     }
@@ -306,6 +353,10 @@ public class ManMonster : MonoBehaviour
             case MonsterState.ChaseFast:
                 targetClip = fastChaseFootsteps;
                 break;
+
+            case MonsterState.RunToPointAndVanish:
+                targetClip = fastChaseFootsteps;
+                break;
         }
 
         if (footstepSource.clip == targetClip)
@@ -346,9 +397,37 @@ public class ManMonster : MonoBehaviour
 
         float speedPercent = 0f;
 
-        if (fastChaseSpeed > 0f)
-            speedPercent = agent.velocity.magnitude / fastChaseSpeed;
+        if (runAwaySpeed > 0f)
+            speedPercent = agent.velocity.magnitude / runAwaySpeed;
 
         animator.SetFloat("Speed", speedPercent);
+    }
+
+    public void TriggerRunToPointAndVanish(Transform targetPoint)
+    {
+        if (runTriggered || agent == null || targetPoint == null)
+            return;
+
+        runTriggered = true;
+        runTargetPoint = targetPoint;
+
+        ChangeState(MonsterState.RunToPointAndVanish);
+
+        agent.isStopped = false;
+        agent.SetDestination(runTargetPoint.position);
+    }
+
+    void StartVanish()
+    {
+        if (isVanishing)
+            return;
+
+        isVanishing = true;
+        Invoke(nameof(VanishNow), vanishDelay);
+    }
+
+    void VanishNow()
+    {
+        gameObject.SetActive(false);
     }
 }

@@ -167,11 +167,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SnakeMonsterAI
   player: {fileID: 0}
+  playerCamera: {fileID: 0}
   agent: {fileID: 356429490905218501}
   bodyPrefab: {fileID: 971063048711079015, guid: b0f4750417d297941a1d319dc0302f05, type: 3}
   headVisual: {fileID: 577368516349673522}
   audioSource: {fileID: 4480821030088276584}
   playerLantern: {fileID: 0}
+  useStartupActivation: 1
+  activationRadius: 50
   startBodyCount: 10
   bodyFollowSpeed: 10
   segmentSpacing: 5
@@ -179,7 +182,15 @@ MonoBehaviour:
   patrolPointReachDistance: 1
   patrolWaitTime: 0.5
   patrolLoop: {fileID: 8300000, guid: 2ce3240f441fbb444a70513b3f761e86, type: 3}
-  chaseLoop: {fileID: 8300000, guid: 9ecf00a3073976f4688e135ca6aef05e, type: 3}
+  chaseLoop: {fileID: 0}
+  frontBangClip: {fileID: 8300000, guid: 19e49a4df35baa04caf325a164f920de, type: 3}
+  bangCheckDistance: 10
+  lookDotThreshold: 1
+  frontFaceDotThreshold: 1
+  bangCooldown: 2
+  onlyInChase: 0
+  drawDebug: 1
+  debugRayLength: 10
   patrolSpeed: 5
   chaseSpeed: 5
   rotationSpeed: 8
