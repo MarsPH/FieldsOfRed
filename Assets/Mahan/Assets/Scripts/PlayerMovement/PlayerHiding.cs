@@ -11,6 +11,12 @@ public class PlayerHiding : MonoBehaviour
         Hidden
     }
 
+    [Header("References")]
+    [SerializeField] private LanternToggle lantern;
+
+    [Header("Rules")]
+    [SerializeField] private bool requireLanternOffToHide = true;
+
     [Header("Timing")]
     [SerializeField] private float enterHideDuration = 0.6f;
 
@@ -78,6 +84,9 @@ public class PlayerHiding : MonoBehaviour
 
         if (hideAudioSource == null)
             hideAudioSource = GetComponent<AudioSource>();
+
+        if (lantern == null)
+            lantern = GetComponentInChildren<LanternToggle>();
     }
 
     private void Start()
@@ -99,8 +108,58 @@ public class PlayerHiding : MonoBehaviour
 
     private void Update()
     {
+        UpdateHideStateByLantern();
         UpdateCameraPosition();
         UpdateVignette();
+    }
+
+    private void UpdateHideStateByLantern()
+    {
+        if (!canHide || currentZone == null)
+            return;
+
+        bool allowedToHide = CanCurrentlyHide();
+
+        if (!allowedToHide)
+        {
+            if (IsTransitioning)
+            {
+                CancelEnterRoutine();
+                currentState = HideState.None;
+                SetHiddenVisuals(false);
+                ApplyNormalMovementState();
+                LogDebug("Hide cancelled because lantern state does not allow hiding.");
+            }
+
+            if (isHidden)
+            {
+                ForceStopHidingImmediate();
+                LogDebug("Forced out of hiding because lantern turned on.");
+            }
+
+            return;
+        }
+
+        if (!isHidden && !IsTransitioning)
+        {
+            PlayEnterHideSoundImmediate();
+            enterRoutine = StartCoroutine(EnterHideRoutine());
+            LogDebug("Started hiding because lantern state allows it.");
+        }
+    }
+
+    private bool CanCurrentlyHide()
+    {
+        if (!canHide || currentZone == null)
+            return false;
+
+        if (!requireLanternOffToHide)
+            return true;
+
+        if (lantern == null)
+            return true;
+
+        return !lantern.IsOn();
     }
 
     public void EnterHideZone(HideZone zone)
@@ -113,7 +172,7 @@ public class PlayerHiding : MonoBehaviour
 
         LogDebug("Entered hide zone: " + zone.name);
 
-        if (!isHidden && !IsTransitioning)
+        if (CanCurrentlyHide() && !isHidden && !IsTransitioning)
         {
             PlayEnterHideSoundImmediate();
             enterRoutine = StartCoroutine(EnterHideRoutine());
@@ -159,7 +218,7 @@ public class PlayerHiding : MonoBehaviour
 
         enterRoutine = null;
 
-        if (!canHide || currentZone == null)
+        if (!CanCurrentlyHide())
         {
             LogDebug("EnterHideRoutine aborted.");
             currentState = HideState.None;
