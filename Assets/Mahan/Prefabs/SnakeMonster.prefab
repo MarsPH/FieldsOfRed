@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.45, z: 27.36}
-  m_LocalScale: {x: 2.1137, y: 2.1137, z: 2.1137}
+  m_LocalScale: {x: 6.506222, y: 6.506222, z: 6.506222}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 577368516349673522}
@@ -174,12 +174,12 @@ MonoBehaviour:
   playerLantern: {fileID: 0}
   startBodyCount: 10
   bodyFollowSpeed: 10
-  segmentSpacing: 0.9
+  segmentSpacing: 5
   patrolRadius: 50
   patrolPointReachDistance: 1
   patrolWaitTime: 0.5
-  patrolLoop: {fileID: 0}
-  chaseLoop: {fileID: 0}
+  patrolLoop: {fileID: 8300000, guid: 2ce3240f441fbb444a70513b3f761e86, type: 3}
+  chaseLoop: {fileID: 8300000, guid: 9ecf00a3073976f4688e135ca6aef05e, type: 3}
   patrolSpeed: 5
   chaseSpeed: 5
   rotationSpeed: 8

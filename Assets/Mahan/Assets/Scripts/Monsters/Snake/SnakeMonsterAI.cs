@@ -43,6 +43,9 @@ public class SnakeMonsterAI : MonoBehaviour
     private float patrolWaitCounter;
     private bool hasPatrolDestination;
 
+    private float patrolLoopTime;
+    private float chaseLoopTime;
+
     void Reset()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -68,7 +71,9 @@ public class SnakeMonsterAI : MonoBehaviour
             GrowSnake();
         }
 
-        ChangeState(SnakeState.Patrol);
+        currentState = SnakeState.Patrol;
+        ApplyStateSettings(currentState);
+        PlayStateLoop(currentState);
         PickNewPatrolPoint();
     }
 
@@ -84,45 +89,43 @@ public class SnakeMonsterAI : MonoBehaviour
 
     void UpdateStateMachine()
     {
-        bool lanternOn = playerLantern.IsOn();
+        SnakeState targetState = playerLantern.IsOn() ? SnakeState.Chase : SnakeState.Patrol;
+
+        if (currentState != targetState)
+            ChangeState(targetState);
 
         switch (currentState)
         {
             case SnakeState.Patrol:
-                agent.speed = patrolSpeed;
-
-                if (lanternOn)
-                {
-                    ChangeState(SnakeState.Chase);
-                    return;
-                }
-
-                if (!hasPatrolDestination || (!agent.pathPending && agent.remainingDistance <= patrolPointReachDistance))
-                {
-                    patrolWaitCounter += Time.deltaTime;
-
-                    if (patrolWaitCounter >= patrolWaitTime)
-                    {
-                        patrolWaitCounter = 0f;
-                        PickNewPatrolPoint();
-                    }
-                }
+                UpdatePatrol();
                 break;
 
             case SnakeState.Chase:
-                agent.speed = chaseSpeed;
-
-                if (lanternOn)
-                {
-                    agent.SetDestination(player.position);
-                }
-                else
-                {
-                    ChangeState(SnakeState.Patrol);
-                    PickNewPatrolPoint();
-                }
+                UpdateChase();
                 break;
         }
+    }
+
+    void UpdatePatrol()
+    {
+        agent.speed = patrolSpeed;
+
+        if (!hasPatrolDestination || (!agent.pathPending && agent.remainingDistance <= patrolPointReachDistance))
+        {
+            patrolWaitCounter += Time.deltaTime;
+
+            if (patrolWaitCounter >= patrolWaitTime)
+            {
+                patrolWaitCounter = 0f;
+                PickNewPatrolPoint();
+            }
+        }
+    }
+
+    void UpdateChase()
+    {
+        agent.speed = chaseSpeed;
+        agent.SetDestination(player.position);
     }
 
     void ChangeState(SnakeState newState)
@@ -130,21 +133,62 @@ public class SnakeMonsterAI : MonoBehaviour
         if (currentState == newState)
             return;
 
+        SaveCurrentLoopTime();
+
         currentState = newState;
 
-        switch (currentState)
+        ApplyStateSettings(currentState);
+        PlayStateLoop(currentState);
+
+        if (currentState == SnakeState.Patrol)
+        {
+            patrolWaitCounter = 0f;
+            PickNewPatrolPoint();
+        }
+    }
+
+    void ApplyStateSettings(SnakeState state)
+    {
+        switch (state)
         {
             case SnakeState.Patrol:
-                PlayLoop(patrolLoop);
+                agent.speed = patrolSpeed;
                 break;
 
             case SnakeState.Chase:
-                PlayLoop(chaseLoop);
+                agent.speed = chaseSpeed;
                 break;
         }
     }
 
-    void PlayLoop(AudioClip clip)
+    void PlayStateLoop(SnakeState state)
+    {
+        switch (state)
+        {
+            case SnakeState.Patrol:
+                PlayLoop(patrolLoop, patrolLoopTime);
+                break;
+
+            case SnakeState.Chase:
+                PlayLoop(chaseLoop, chaseLoopTime);
+                break;
+        }
+    }
+
+    void SaveCurrentLoopTime()
+    {
+        if (audioSource == null || audioSource.clip == null)
+            return;
+
+        float currentTime = audioSource.time;
+
+        if (audioSource.clip == patrolLoop)
+            patrolLoopTime = currentTime;
+        else if (audioSource.clip == chaseLoop)
+            chaseLoopTime = currentTime;
+    }
+
+    void PlayLoop(AudioClip clip, float savedTime)
     {
         if (audioSource == null)
             return;
@@ -152,14 +196,22 @@ public class SnakeMonsterAI : MonoBehaviour
         if (clip == null)
         {
             audioSource.Stop();
+            audioSource.clip = null;
             return;
         }
 
         if (audioSource.clip == clip && audioSource.isPlaying)
             return;
 
+        audioSource.Stop();
         audioSource.clip = clip;
         audioSource.loop = true;
+
+        if (clip.length > 0f)
+            audioSource.time = Mathf.Repeat(savedTime, clip.length);
+        else
+            audioSource.time = 0f;
+
         audioSource.Play();
     }
 
@@ -183,6 +235,9 @@ public class SnakeMonsterAI : MonoBehaviour
 
     void RotateHeadVisual()
     {
+        if (headVisual == null)
+            return;
+
         Vector3 velocity = agent.velocity;
         velocity.y = 0f;
 

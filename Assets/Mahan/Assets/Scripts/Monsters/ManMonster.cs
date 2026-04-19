@@ -16,7 +16,8 @@ public class ManMonster : MonoBehaviour
     public LanternToggle playerLantern;
     public NavMeshAgent agent;
     public Transform visualRoot;
-    public AudioSource audioSource;
+    public AudioSource musicSource;
+    public AudioSource footstepSource;
     public Animator animator;
 
     [Header("Patrol")]
@@ -30,19 +31,34 @@ public class ManMonster : MonoBehaviour
     public float fastChaseSpeed = 5.5f;
     public float rotationSpeed = 8f;
 
-    [Header("Sounds")]
+    [Header("State Music")]
     public AudioClip patrolLoop;
     public AudioClip slowChaseLoop;
     public AudioClip fastChaseLoop;
+
+    [Header("Footsteps")]
+    public AudioClip patrolFootsteps;
+    public AudioClip slowChaseFootsteps;
+    public AudioClip fastChaseFootsteps;
+    public float footstepMinVelocity = 0.15f;
 
     private MonsterState currentState = MonsterState.Patrol;
     private float patrolWaitCounter;
     private bool hasPatrolDestination;
 
+    private float patrolLoopTime;
+    private float slowChaseLoopTime;
+    private float fastChaseLoopTime;
+
     void Reset()
     {
         agent = GetComponent<NavMeshAgent>();
-        audioSource = GetComponent<AudioSource>();
+
+        AudioSource[] sources = GetComponents<AudioSource>();
+        if (sources.Length > 0)
+            musicSource = sources[0];
+        if (sources.Length > 1)
+            footstepSource = sources[1];
     }
 
     void Start()
@@ -50,16 +66,24 @@ public class ManMonster : MonoBehaviour
         if (agent == null)
             agent = GetComponent<NavMeshAgent>();
 
-        if (audioSource == null)
-            audioSource = GetComponent<AudioSource>();
-
         if (visualRoot == null)
             visualRoot = transform;
 
         agent.updateRotation = false;
         agent.updateUpAxis = true;
 
-        ChangeState(MonsterState.Patrol);
+        if (musicSource != null)
+            musicSource.loop = true;
+
+        if (footstepSource != null)
+            footstepSource.loop = true;
+
+        currentState = MonsterState.Patrol;
+
+        ApplyStateSettings(currentState);
+        PlayStateMusic(currentState);
+        SetFootstepClipForState(currentState);
+
         PickNewPatrolPoint();
     }
 
@@ -71,37 +95,35 @@ public class ManMonster : MonoBehaviour
         UpdateStateMachine();
         RotateVisual();
         UpdateAnimator();
+        UpdateFootstepsPlayback();
     }
 
     void UpdateStateMachine()
     {
+        MonsterState targetState;
+
         if (playerHiding.IsHidden || playerHiding.IsTransitioning)
         {
-            if (currentState != MonsterState.Patrol)
-            {
-                ChangeState(MonsterState.Patrol);
-                PickNewPatrolPoint();
-            }
-
-            UpdatePatrol();
-            return;
-        }
-
-        if (playerLantern.IsOn())
-        {
-            if (currentState != MonsterState.ChaseFast)
-                ChangeState(MonsterState.ChaseFast);
-
-            agent.speed = fastChaseSpeed;
-            agent.SetDestination(player.position);
+            targetState = MonsterState.Patrol;
         }
         else
         {
-            if (currentState != MonsterState.ChaseSlow)
-                ChangeState(MonsterState.ChaseSlow);
+            targetState = playerLantern.IsOn() ? MonsterState.ChaseFast : MonsterState.ChaseSlow;
+        }
 
-            agent.speed = slowChaseSpeed;
-            agent.SetDestination(player.position);
+        if (currentState != targetState)
+            ChangeState(targetState);
+
+        switch (currentState)
+        {
+            case MonsterState.Patrol:
+                UpdatePatrol();
+                break;
+
+            case MonsterState.ChaseSlow:
+            case MonsterState.ChaseFast:
+                UpdateChase();
+                break;
         }
     }
 
@@ -119,6 +141,14 @@ public class ManMonster : MonoBehaviour
                 PickNewPatrolPoint();
             }
         }
+    }
+
+    void UpdateChase()
+    {
+        if (player == null)
+            return;
+
+        agent.SetDestination(player.position);
     }
 
     void PickNewPatrolPoint()
@@ -141,13 +171,20 @@ public class ManMonster : MonoBehaviour
 
     void RotateVisual()
     {
+        if (visualRoot == null)
+            return;
+
         Vector3 velocity = agent.velocity;
         velocity.y = 0f;
 
         if (velocity.sqrMagnitude > 0.05f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(velocity.normalized, Vector3.up);
-            visualRoot.rotation = Quaternion.Slerp(visualRoot.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            visualRoot.rotation = Quaternion.Slerp(
+                visualRoot.rotation,
+                targetRotation,
+                rotationSpeed * Time.deltaTime
+            );
         }
     }
 
@@ -156,41 +193,150 @@ public class ManMonster : MonoBehaviour
         if (currentState == newState)
             return;
 
+        SaveCurrentMusicTime();
+
         currentState = newState;
 
-        switch (currentState)
+        ApplyStateSettings(currentState);
+        PlayStateMusic(currentState);
+        SetFootstepClipForState(currentState);
+
+        if (currentState == MonsterState.Patrol)
+        {
+            patrolWaitCounter = 0f;
+            PickNewPatrolPoint();
+        }
+    }
+
+    void ApplyStateSettings(MonsterState state)
+    {
+        switch (state)
         {
             case MonsterState.Patrol:
-                PlayLoop(patrolLoop);
+                agent.speed = patrolSpeed;
                 break;
 
             case MonsterState.ChaseSlow:
-                PlayLoop(slowChaseLoop);
+                agent.speed = slowChaseSpeed;
                 break;
 
             case MonsterState.ChaseFast:
-                PlayLoop(fastChaseLoop);
+                agent.speed = fastChaseSpeed;
                 break;
         }
     }
 
-    void PlayLoop(AudioClip clip)
+    void PlayStateMusic(MonsterState state)
     {
-        if (audioSource == null)
+        switch (state)
+        {
+            case MonsterState.Patrol:
+                PlayMusicLoop(patrolLoop, patrolLoopTime);
+                break;
+
+            case MonsterState.ChaseSlow:
+                PlayMusicLoop(slowChaseLoop, slowChaseLoopTime);
+                break;
+
+            case MonsterState.ChaseFast:
+                PlayMusicLoop(fastChaseLoop, fastChaseLoopTime);
+                break;
+        }
+    }
+
+    void SaveCurrentMusicTime()
+    {
+        if (musicSource == null || musicSource.clip == null)
+            return;
+
+        float currentTime = musicSource.time;
+
+        if (musicSource.clip == patrolLoop)
+            patrolLoopTime = currentTime;
+        else if (musicSource.clip == slowChaseLoop)
+            slowChaseLoopTime = currentTime;
+        else if (musicSource.clip == fastChaseLoop)
+            fastChaseLoopTime = currentTime;
+    }
+
+    void PlayMusicLoop(AudioClip clip, float savedTime)
+    {
+        if (musicSource == null)
             return;
 
         if (clip == null)
         {
-            audioSource.Stop();
+            musicSource.Stop();
+            musicSource.clip = null;
             return;
         }
 
-        if (audioSource.clip == clip && audioSource.isPlaying)
+        if (musicSource.clip == clip && musicSource.isPlaying)
             return;
 
-        audioSource.clip = clip;
-        audioSource.loop = true;
-        audioSource.Play();
+        musicSource.Stop();
+        musicSource.clip = clip;
+        musicSource.loop = true;
+
+        if (clip.length > 0f)
+            musicSource.time = Mathf.Repeat(savedTime, clip.length);
+        else
+            musicSource.time = 0f;
+
+        musicSource.Play();
+    }
+
+    void SetFootstepClipForState(MonsterState state)
+    {
+        if (footstepSource == null)
+            return;
+
+        AudioClip targetClip = null;
+
+        switch (state)
+        {
+            case MonsterState.Patrol:
+                targetClip = patrolFootsteps;
+                break;
+
+            case MonsterState.ChaseSlow:
+                targetClip = slowChaseFootsteps;
+                break;
+
+            case MonsterState.ChaseFast:
+                targetClip = fastChaseFootsteps;
+                break;
+        }
+
+        if (footstepSource.clip == targetClip)
+            return;
+
+        bool wasPlaying = footstepSource.isPlaying;
+        footstepSource.Stop();
+        footstepSource.clip = targetClip;
+        footstepSource.loop = true;
+
+        if (wasPlaying && targetClip != null)
+            footstepSource.Play();
+    }
+
+    void UpdateFootstepsPlayback()
+    {
+        if (footstepSource == null)
+            return;
+
+        bool shouldPlay = agent.velocity.magnitude > footstepMinVelocity && footstepSource.clip != null;
+
+        if (shouldPlay)
+        {
+            if (!footstepSource.isPlaying)
+                footstepSource.Play();
+        }
+        else
+        {
+            if (footstepSource.isPlaying)
+                footstepSource.Stop();
+        }
     }
 
     void UpdateAnimator()
@@ -198,7 +344,11 @@ public class ManMonster : MonoBehaviour
         if (animator == null)
             return;
 
-        float speedPercent = agent.velocity.magnitude / fastChaseSpeed;
+        float speedPercent = 0f;
+
+        if (fastChaseSpeed > 0f)
+            speedPercent = agent.velocity.magnitude / fastChaseSpeed;
+
         animator.SetFloat("Speed", speedPercent);
     }
 }
