@@ -4136,8 +4136,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8462363885245114134}
     - target: {fileID: 2176327485798618759, guid: dd21f043399dd5f45b066cde5930505b, type: 3}
+      propertyPath: chaseSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2176327485798618759, guid: dd21f043399dd5f45b066cde5930505b, type: 3}
       propertyPath: patrolSpeed
-      value: 50
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 2176327485798618759, guid: dd21f043399dd5f45b066cde5930505b, type: 3}
       propertyPath: playerCamera
