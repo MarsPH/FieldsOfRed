@@ -25,5 +25,12 @@ public class SimpleCheckpoint : MonoBehaviour
 
         checkpointReached = true;
         used = true;
+
+        ManMonster[] monsters = FindObjectsOfType<ManMonster>();
+
+        for (int i = 0; i < monsters.Length; i++)
+        {
+            Destroy(monsters[i].gameObject);
+        }
     }
 }
