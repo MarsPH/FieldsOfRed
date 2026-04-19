@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a05bb17c1404f3b4d82d28f2ea534980, type: 3}
   m_Name: MazeSettings
   m_EditorClassIdentifier: Assembly-CSharp::MazeSettingsSO
-  width: 12
-  height: 12
-  cellSize: 4
-  wallHeight: 4
+  width: 10
+  height: 10
+  cellSize: 20
+  wallHeight: 25
   wallThickness: 0.35
   textureRepeatPerWorldUnit: 0.4
   wallMaterial: {fileID: 2100000, guid: 84bed3743a4716045849edfbc9969bdc, type: 2}
