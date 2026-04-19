@@ -9,6 +9,8 @@ public class EndTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             SceneManager.LoadScene(endSceneName);
         }
     }
