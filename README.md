@@ -68,7 +68,7 @@ This game contains:
 
 ## Download / Play
 
-[Add your itch.io or download link here](#)
+[Play on itch.io](https://napstyy.itch.io/fields-of-red)
 
 ---
 
