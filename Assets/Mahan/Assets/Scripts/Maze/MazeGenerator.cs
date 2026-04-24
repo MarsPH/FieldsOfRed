@@ -304,32 +304,36 @@ public class MazeGenerator : MonoBehaviour
         float lengthWorld = span.length * settings.cellSize;
         float halfHeight = settings.wallHeight * 0.5f;
 
-        GameObject root = new GameObject(span.horizontal ? "Wall_H" : "Wall_V");
-        root.transform.SetParent(generatedRoot, false);
+        GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        wall.name = span.horizontal ? "Wall_H" : "Wall_V";
+        wall.transform.SetParent(generatedRoot, false);
 
         if (span.horizontal)
         {
             float centerX = (span.startX * settings.cellSize) + (lengthWorld * 0.5f);
             float z = span.startY * settings.cellSize;
 
-            root.transform.localPosition = new Vector3(centerX, settings.floorY + halfHeight, z);
-            root.transform.localRotation = Quaternion.identity;
+            wall.transform.localPosition = new Vector3(centerX, settings.floorY + halfHeight, z);
+            wall.transform.localRotation = Quaternion.identity;
+            wall.transform.localScale = new Vector3(lengthWorld, settings.wallHeight, settings.wallThickness);
         }
         else
         {
             float x = span.startX * settings.cellSize;
             float centerZ = (span.startY * settings.cellSize) + (lengthWorld * 0.5f);
 
-            root.transform.localPosition = new Vector3(x, settings.floorY + halfHeight, centerZ);
-            root.transform.localRotation = Quaternion.Euler(0f, 90f, 0f);
+            wall.transform.localPosition = new Vector3(x, settings.floorY + halfHeight, centerZ);
+            wall.transform.localRotation = Quaternion.identity;
+            wall.transform.localScale = new Vector3(settings.wallThickness, settings.wallHeight, lengthWorld);
         }
 
-        BoxCollider collider = root.AddComponent<BoxCollider>();
-        collider.size = new Vector3(lengthWorld, settings.wallHeight, settings.wallThickness);
-        collider.center = Vector3.zero;
+        if (settings.wallMaterial != null)
+        {
+            Renderer renderer = wall.GetComponent<Renderer>();
+            renderer.sharedMaterial = settings.wallMaterial;
 
-        CreateQuadSide(root.transform, "Front", Vector3.forward, lengthWorld);
-        CreateQuadSide(root.transform, "Back", Vector3.back, lengthWorld);
+            ApplyTextureTiling(renderer, lengthWorld);
+        }
     }
 
     private void CreateQuadSide(Transform parent, string quadName, Vector3 localForwardOffset, float lengthWorld)

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MazeSettings
   m_EditorClassIdentifier: Assembly-CSharp::MazeSettingsSO
   width: 10
-  height: 10
+  height: 3
   cellSize: 20
   wallHeight: 25
   wallThickness: 0.35
