@@ -59,6 +59,7 @@ public class ManMonster : MonoBehaviour
     private bool runTriggered;
     private bool isVanishing;
     private Transform runTargetPoint;
+    public MonsterState CurrentState => currentState;
 
     void Reset()
     {

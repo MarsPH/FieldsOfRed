@@ -1970,6 +1970,75 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 244520303}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &253555779
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3384569914070851672, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 627154343}
+    - target: {fileID: 3384569914070851672, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: playerHiding
+      value: 
+      objectReference: {fileID: 627154342}
+    - target: {fileID: 3384569914070851672, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: playerLantern
+      value: 
+      objectReference: {fileID: 1132164808}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -51.267395
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.3789983
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -21.058167
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3975096224102010637, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4350952610965525943, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
+      propertyPath: m_Name
+      value: MonsterMan (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c16a3ee9843630443a1eb88aaf7b8777, type: 3}
 --- !u!1 &261588678
 GameObject:
   m_ObjectHideFlags: 0
@@ -6104,6 +6173,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 620346683}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &627154342 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3956362871639005764, guid: dce44a6b9d5d6484184263446a14412b, type: 3}
+  m_PrefabInstance: {fileID: 1297664645}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 763c227739fe1b94cbc6bac507d97ef7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHiding
+--- !u!4 &627154343 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2705926828649065851, guid: dce44a6b9d5d6484184263446a14412b, type: 3}
+  m_PrefabInstance: {fileID: 1297664645}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &648670199
 GameObject:
   m_ObjectHideFlags: 0
@@ -7278,7 +7363,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.33333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: f29603161796a154793cd38cdc3631bb, type: 2}
   m_BuildHeightMesh: 0
@@ -10662,6 +10747,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1126439135}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1132164808 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5729752919870974691, guid: dce44a6b9d5d6484184263446a14412b, type: 3}
+  m_PrefabInstance: {fileID: 1297664645}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13be2ecc36e22f64c80f3ee61ab43001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LanternToggle
 --- !u!1 &1136415850
 GameObject:
   m_ObjectHideFlags: 0
@@ -12473,6 +12569,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2629441568724003899, guid: dce44a6b9d5d6484184263446a14412b, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2705926828649065851, guid: dce44a6b9d5d6484184263446a14412b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -18.129538
@@ -12512,6 +12612,14 @@ PrefabInstance:
     - target: {fileID: 2705926828649065851, guid: dce44a6b9d5d6484184263446a14412b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4362799796977317266, guid: dce44a6b9d5d6484184263446a14412b, type: 3}
+      propertyPath: m_RendererIndex
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109354955454875796, guid: dce44a6b9d5d6484184263446a14412b, type: 3}
+      propertyPath: m_TargetTexture
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7000909292192345033, guid: dce44a6b9d5d6484184263446a14412b, type: 3}
       propertyPath: m_Name
@@ -19746,3 +19854,4 @@ SceneRoots:
   - {fileID: 1360491330}
   - {fileID: 1941370697}
   - {fileID: 1297664645}
+  - {fileID: 253555779}

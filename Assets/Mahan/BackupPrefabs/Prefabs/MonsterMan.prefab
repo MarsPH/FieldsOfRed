@@ -102,13 +102,15 @@ GameObject:
   - component: {fileID: 3384569914070851672}
   - component: {fileID: 4234686285183174408}
   - component: {fileID: 2222845611042126317}
+  - component: {fileID: 2958111174748547519}
+  - component: {fileID: 9101775368709295217}
   m_Layer: 0
   m_Name: MonsterMan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3975096224102010637
 Transform:
   m_ObjectHideFlags: 0
@@ -150,8 +152,8 @@ MonoBehaviour:
   patrolPointReachDistance: 1.2
   patrolWaitTime: 1.5
   patrolSpeed: 5
-  slowChaseSpeed: 2.5
-  fastChaseSpeed: 5.5
+  slowChaseSpeed: 2
+  fastChaseSpeed: 7
   runAwaySpeed: 7
   rotationSpeed: 8
   patrolLoop: {fileID: 8300000, guid: 66e3b395247cf3d45904229168195214, type: 3}
@@ -282,6 +284,42 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!65 &2958111174748547519
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4350952610965525943}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &9101775368709295217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4350952610965525943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c093ce08ab65cc24eb4df40959ac40f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterRunTrigger
+  monster: {fileID: 3384569914070851672}
+  targetPoint: {fileID: 0}
+  triggerOnlyOnce: 1
 --- !u!1001 &8504855500512099441
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -297,6 +335,10 @@ PrefabInstance:
     - target: {fileID: 2838768861453600670, guid: 8d8edc6357c7ff84996ee05cba34ec49, type: 3}
       propertyPath: endSceneName
       value: EndScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 2838768861453600670, guid: 8d8edc6357c7ff84996ee05cba34ec49, type: 3}
+      propertyPath: fadeDurationMultiplier
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3181294062310762391, guid: 8d8edc6357c7ff84996ee05cba34ec49, type: 3}
       propertyPath: m_Name

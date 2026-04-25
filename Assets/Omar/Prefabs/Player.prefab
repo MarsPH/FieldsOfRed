@@ -419,8 +419,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LanternWhispers
   player: {fileID: 2705926828649065851}
   monster: {fileID: 0}
-  dangerDistance: 50
-  isInBush: 0
+  playerHiding: {fileID: 3956362871639005764}
+  lanternToggle: {fileID: 5729752919870974691}
+  dangerDistance: 100
   dangerLines:
   - {fileID: 11400000, guid: 85c2556e1b4970f4caa85a2706a1ea77, type: 2}
   - {fileID: 11400000, guid: 1007cc168305ef549852b3417b6eea98, type: 2}
@@ -434,6 +435,9 @@ MonoBehaviour:
   minDelay: 4
   maxDelay: 8
   speakChance: 0.7
+  drawDebug: 1
+  dangerRangeColor: {r: 1, g: 0, b: 0, a: 0.2}
+  hiddenColor: {r: 0, g: 1, b: 0, a: 0.2}
 --- !u!1 &1393055197630897158
 GameObject:
   m_ObjectHideFlags: 0
@@ -887,6 +891,7 @@ GameObject:
   - component: {fileID: 3956362871639005764}
   - component: {fileID: 834702402390202220}
   - component: {fileID: 8134245086455217104}
+  - component: {fileID: 3063250158122155685}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1064,7 +1069,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 763c227739fe1b94cbc6bac507d97ef7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHiding
-  enterHideDuration: 0.35
+  lantern: {fileID: 0}
+  requireLanternOffToHide: 1
+  enterHideDuration: 0
   lockMovementWhileEntering: 0
   lockJumpWhileEntering: 1
   lockMovementWhileHidden: 0
@@ -1073,6 +1080,10 @@ MonoBehaviour:
   cameraHolder: {fileID: 8057809152392652122}
   hiddenCameraYOffset: -0.5
   cameraMoveSpeed: 8
+  hideAudioSource: {fileID: 8194315539834488650}
+  enterHideSound: {fileID: 8300000, guid: d2f9b55c50b7d8e409289a4c0e2cf864, type: 3}
+  exitHideSound: {fileID: 8300000, guid: d2f9b55c50b7d8e409289a4c0e2cf864, type: 3}
+  hideSoundVolume: 1
   leavesAnimator: {fileID: 0}
   useAnimatorBool: 0
   animatorHiddenBool: IsHidden
@@ -1090,6 +1101,7 @@ MonoBehaviour:
   canHide: 0
   isHidden: 0
   currentState: 0
+  debugLogs: 1
 --- !u!95 &834702402390202220
 Animator:
   serializedVersion: 7
@@ -1141,6 +1153,20 @@ MonoBehaviour:
   walkStepRate: 0.5
   runStepRate: 0.3
   pitchVariation: 0.1
+--- !u!114 &3063250158122155685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7000909292192345033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d26556de665d6448bd8ad31c044a313, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimplePlayerSpawn
+  initialSpawn: {fileID: 0}
+  checkpointSpawn: {fileID: 0}
 --- !u!1 &8149506150353488735
 GameObject:
   m_ObjectHideFlags: 0
@@ -1152,7 +1178,7 @@ GameObject:
   - component: {fileID: 8940383465467176809}
   - component: {fileID: 8194315539834488650}
   m_Layer: 7
-  m_Name: Audio Source
+  m_Name: PlayerAudioSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
